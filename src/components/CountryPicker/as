@@ -1,0 +1,48 @@
+
+import React, { useState , useEffect }from 'react';
+import { NativeSelect , FormControl } from '@material-ui/core';
+import { styles } from './CountryPicker.module.css';
+import { fetchCountries } from '../../api';
+
+
+
+const CountryPicker = ({ handleCountryChange }) => {
+
+    const [fetchedCountries , setFetchCountries] = useState([]);
+   
+    useEffect( ()=> {
+        const fetchedAPI = async () => {
+            setFetchCountries(await fetchCountries());
+        }
+        fetchedAPI();
+    }, [setFetchCountries]);
+
+    return (
+        <FormControl className={styles.formControls} >
+            <NativeSelect defaultValue = "" 
+                onChange= {(e) => handleCountryChange(e.target.value)}>
+
+                <option value="">Global</option>
+                {fetchedCountries.map((country, i) => 
+                <option key = {i} 
+                value={country}>
+                    {country}
+                </option>)}
+            </NativeSelect>
+        </FormControl>
+    )
+}
+
+export default CountryPicker;
+
+
+export const fetchCountries = async () => {
+    try{
+            const { data : { countries }}  = axios.get(`${url}/countries`);
+            console.log(countries)
+           // return countries.map((country) => country.name);
+    }
+    catch(error){
+        console.log(error)
+    }
+}
